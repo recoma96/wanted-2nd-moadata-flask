@@ -1,5 +1,5 @@
 from typing import Dict, List
-from libs.algorithms.topological_sort import topological_sort
+from libs.algorithms import topological_sort
 
 
 def validate_job_list(graph: Dict[str, List[str]]) -> bool:

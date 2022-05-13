@@ -1,11 +1,11 @@
 from typing import Any, List, Callable, Tuple, Optional
-from libs.validate.validator import AutomaticValidator
+from libs.validator.validator import AutomaticValidator
 
 
 class ValidatorChain:
     """
     Multiple Validators Machine
-    Data can be check many validate by using this class only one
+    Data can be check many validator by using this class only one
     """
 
     """

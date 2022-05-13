@@ -10,7 +10,7 @@ class Validator(metaclass=ABCMeta):
     @abstractmethod
     def __call__(self, data: Any) -> bool:
         """
-        Check if data is validate
+        Check if data is validator
         :returns True if data is valid
         :return False if data is not valid
         """
@@ -28,7 +28,7 @@ class AutomaticValidator(Validator):
     data_type: type
 
     """
-    Input data must be passed by this validate logic
+    Input data must be passed by this validator logic
     Recomented about function which return type is bool or has Exception
     """
     validate_logic: Callable
@@ -49,7 +49,7 @@ class AutomaticValidator(Validator):
 
     def __call__(self, data: Any) -> (bool, Optional[Exception]):
         """
-        :param data: the data for check validate
+        :param data: the data for check validator
         :return: (True, None) if data is valid, then Exception is None
         :return: (False, Exception) if data is not valid, then Exception is returned
         """
@@ -58,7 +58,7 @@ class AutomaticValidator(Validator):
         if not isinstance(data, self.data_type):
             return False, Exception("Data Type Not Matched")
         try:
-            # run validate logic for validate data
+            # run validator logic for validator data
             is_valid = self.validate_logic(data)
         except Exception as e:
             # if is called exception Then return False

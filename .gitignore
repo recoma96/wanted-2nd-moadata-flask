@@ -152,7 +152,7 @@ venv.bak/
 .dmypy.json
 dmypy.json
 
-# Pyre type validate
+# Pyre type validator
 .pyre/
 
 # pytype static type analyzer
