@@ -1,9 +1,8 @@
-from abc import ABCMeta
 from typing import Any, List, Callable, Tuple, Optional
 from libs.validate.validator import AutomaticValidator
 
 
-class ValidatorChain(metaclass=ABCMeta):
+class ValidatorChain:
     """
     Multiple Validators Machine
     Data can be check many validate by using this class only one
@@ -27,7 +26,7 @@ class ValidatorChain(metaclass=ABCMeta):
         """
         :param validator:       Validate Class
         :param pre_procssor:    pre-processor function, None if not used function
-        :return: id valif of validator
+        :return: id of validator
         """
         self.validators.append((validator, pre_procssor))
         return len(self.validators)
@@ -35,8 +34,11 @@ class ValidatorChain(metaclass=ABCMeta):
     def __call__(self, data: Any) -> (bool, Optional[Exception]):
         for validator, pre_processor in self.validators:
             pre_processed_data = data if not pre_processor else pre_processor(data)
-            is_valid, err = validator(pre_processed_data)
+            is_valid, err = False, None
+            try:
+                is_valid, err = validator(pre_processed_data)
+            except Exception as e:
+                is_valid, e = False, e
             if not is_valid:
                 return False, err
         return True, None
-

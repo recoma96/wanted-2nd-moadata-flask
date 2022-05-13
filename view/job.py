@@ -1,5 +1,6 @@
 from flask_restful import Resource
-from flask import jsonify, request
+from flask import request, Response
+from utils.validator_chains import get_job_validator_chain
 
 
 class JobCreateView(Resource):
@@ -9,7 +10,16 @@ class JobCreateView(Resource):
         """
         # json 데이터 얻기, 없으면 400 호출
         data = request.get_json()
-        return {"hello": "scale"}
+        validator = get_job_validator_chain()
+        is_valid, err = validator(data)
+        if not is_valid:
+            # 유효성 실패
+            return Response({'error', str(err)},
+                            status=400,
+                            mimetype='application/json')
+        return Response({'error': 'success'},
+                        status=201,
+                        mimetype='application/json')
 
 
 class JobView(Resource):

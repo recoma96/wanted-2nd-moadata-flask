@@ -25,7 +25,7 @@ def test_no_over_two_graph(api):
     """
     job = {
         'job_name': 'Job1',
-        'job_list': {
+        'task_list': {
             'R1': ['R2', 'W1'],
             'R2': ['W2'],
             'W1': ['W2'],
@@ -34,12 +34,12 @@ def test_no_over_two_graph(api):
             'W3': [],
         },
         'property': {
-            'R1': {'task_name': 'read', 'filename': 'init.csv'},
-            'R2': {'task_name': 'read', 'fielname': 'a.csv'},
-            'W1': {'task_name': 'write', 'filename': 'b.csv'},
-            'W2': {'task_name': 'write', 'filename': 'c.csv'},
-            'R3': {'task_name': 'read', 'filename': 'd.csv'},
-            'W3': {'task_name': 'read', 'filename': 'e.csv'},
+            'R1': {'task_name': 'read', 'filename': 'a.csv', 'sep': ','},
+            'R2': {'task_name': 'read', 'fielname': 'a.csv', 'sep': ','},
+            'W1': {'task_name': 'write', 'filename': 'b.csv', 'sep': ','},
+            'W2': {'task_name': 'write', 'filename': 'c.csv', 'sep': ','},
+            'R3': {'task_name': 'read', 'filename': 'd.csv', 'sep': ','},
+            'W3': {'task_name': 'read', 'filename': 'e.csv', 'sep': ','},
         }
     }
     check_only_status(api, job, 400)
@@ -53,16 +53,16 @@ def test_no_cycle_in_graph(api):
     """
     job = {
         'job_name': 'Job1',
-        'job_list': {
+        'task_list': {
             'R1': ['D'],
             'R2': ['D'],
             'W1': ['R2'],
             'D': ['W1']
         },
         'property': {
-            'R1': {'task_name': 'read', 'filename': 'init.csv'},
-            'R2': {'task_name': 'read', 'fielname': 'a.csv'},
-            'W1': {'task_name': 'write', 'filename': 'b.csv'},
+            'R1': {'task_name': 'read', 'filename': 'a.csv', 'sep': ','},
+            'R2': {'task_name': 'read', 'fielname': 'a.csv', 'sep': ','},
+            'W1': {'task_name': 'write', 'filename': 'b.csv', 'sep': ','},
             'D': {'task_name': 'drop', 'column_name': 'column1'},
         }
     }
@@ -75,7 +75,7 @@ def test_no_double_of_one_edge(api):
     """
     job = {
         'job_name': 'Job1',
-        'job_list': {
+        'task_list': {
             'R1': ['W1', 'W2'],
             'W1': ['D1'],
             'W2': ['D1'],
@@ -85,11 +85,11 @@ def test_no_double_of_one_edge(api):
             'W4': [],
         },
         'property': {
-            'R1': {'task_name': 'read', 'filename': 'init.csv'},
-            'W1': {'task_name': 'write', 'filename': 'a.csv'},
-            'W2': {'task_name': 'write', 'filename': 'b.csv'},
-            'W3': {'task_name': 'write', 'filename': 'c.csv'},
-            'W4': {'task_name': 'write', 'filename': 'd.csv'},
+            'R1': {'task_name': 'read', 'filename': 'a.csv', 'sep': ','},
+            'W1': {'task_name': 'write', 'filename': 'a.csv', 'sep': ','},
+            'W2': {'task_name': 'write', 'filename': 'b.csv', 'sep': ','},
+            'W3': {'task_name': 'write', 'filename': 'c.csv', 'sep': ','},
+            'W4': {'task_name': 'write', 'filename': 'd.csv', 'sep': ','},
             'D1': {'task_name': 'drop', 'column_name': 'column1'},
             'D2': {'task_name': 'drop', 'column_name': 'column2'},
         }
@@ -103,17 +103,17 @@ def test_property_size_not_match(api):
     """
     job = {
         'job_name': 'Job1',
-        'job_list': {
+        'task_list': {
             'R1': ['R2', 'W1'],
             'R2': ['W1', 'W2'],
             'W1': ['W2'],
             'W2': [],
         },
         'property': {
-            'R1': {'task_name': 'read', 'filename': 'init.csv'},
-            'R2': {'task_name': 'read', 'filename': '1.csv'},
-            'W1': {'task_name': 'write', 'filename': 'a.csv'},
-            'W3': {'task_name': 'write', 'filename': 'b.csv'},
+            'R1': {'task_name': 'read', 'filename': 'a.csv', 'sep': ','},
+            'R2': {'task_name': 'read', 'filename': '1.csv', 'sep': ','},
+            'W1': {'task_name': 'write', 'filename': 'a.csv', 'sep': ','},
+            'W3': {'task_name': 'write', 'filename': 'b.csv', 'sep': ','},
         }
     }
     check_only_status(api, job, 400)
@@ -125,17 +125,17 @@ def test_property_read_failed(api):
     """
     job = {
         'job_name': 'Job1',
-        'job_list': {
+        'task_list': {
             'R1': ['R2', 'D1'],
             'R2': ['D1', 'W2'],
             'D1': ['W2'],
             'W2': [],
         },
         'property': {
-            'R1': {'task_name': 'read', 'column_name': 'init.csv'},
-            'R2': {'task_name': 'read', 'filename': '1.csv'},
+            'R1': {'task_name': 'read', 'column_name': 'a.csv', 'sep': ','},
+            'R2': {'task_name': 'read', 'filename': '1.csv', 'sep': ','},
             'D1': {'task_name': 'drop', 'column_name': 'col1'},
-            'W2': {'task_name': 'write', 'filename': 'b.csv'},
+            'W2': {'task_name': 'write', 'filename': 'b.csv', 'sep': ','},
         }
     }
     check_only_status(api, job, 400)
@@ -147,15 +147,15 @@ def test_property_write_failed(api):
     """
     job = {
         'job_name': 'Job1',
-        'job_list': {
+        'task_list': {
             'R1': ['R2', 'D1'],
             'R2': ['D1', 'W2'],
             'D1': ['W2'],
             'W2': [],
         },
         'property': {
-            'R1': {'task_name': 'read', 'filename': 'init.csv'},
-            'R2': {'task_name': 'read', 'filename': '1.csv'},
+            'R1': {'task_name': 'read', 'filename': 'a.csv', 'sep': ','},
+            'R2': {'task_name': 'read', 'filename': '1.csv', 'sep': ','},
             'D1': {'task_name': 'drop', 'column_name': 'col1'},
             'W2': {'task_name': 'write', 'column_name': 'col1'},
         }
@@ -169,17 +169,17 @@ def test_property_drop_failed(api):
     """
     job = {
         'job_name': 'Job1',
-        'job_list': {
+        'task_list': {
             'R1': ['R2', 'D1'],
             'R2': ['D1', 'W2'],
             'D1': ['W2'],
             'W2': [],
         },
         'property': {
-            'R1': {'task_name': 'read', 'filename': 'init.csv'},
-            'R2': {'task_name': 'read', 'filename': '1.csv'},
-            'D1': {'task_name': 'drop', 'filename': 'init.csv'},
-            'W2': {'task_name': 'write', 'filename': 'init.csv'},
+            'R1': {'task_name': 'read', 'filename': 'a.csv', 'sep': ','},
+            'R2': {'task_name': 'read', 'filename': '1.csv', 'sep': ','},
+            'D1': {'task_name': 'drop', 'filename': 'a.csv', 'sep': ','},
+            'W2': {'task_name': 'write', 'filename': 'a.csv', 'sep': ','},
         }
     }
     check_only_status(api, job, 400)
@@ -191,17 +191,17 @@ def test_success(api):
     """
     job = {
         'job_name': 'Job1',
-        'job_list': {
+        'task_list': {
             'R1': ['R2', 'W1'],
             'R2': ['W1', 'W2'],
             'W1': ['W2'],
             'W2': [],
         },
         'property': {
-            'R1': {'task_name': 'read', 'filename': 'init.csv'},
-            'R2': {'task_name': 'read', 'filename': '1.csv'},
-            'W1': {'task_name': 'write', 'filename': 'a.csv'},
-            'W2': {'task_name': 'write', 'filename': 'b.csv'},
+            'R1': {'task_name': 'read', 'filename': 'a.csv', 'sep': ','},
+            'R2': {'task_name': 'read', 'filename': '1.csv', 'sep': ','},
+            'W1': {'task_name': 'write', 'filename': 'a.csv', 'sep': ','},
+            'W2': {'task_name': 'write', 'filename': 'b.csv', 'sep': ','},
         }
     }
     check_only_status(api, job, 400)
