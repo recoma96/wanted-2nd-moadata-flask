@@ -1,5 +1,5 @@
 import pytest
-from api import get_app
+from api import get_app, generate_jobdatabase_engine
 import json
 
 # 이것만 사용한다.
@@ -10,6 +10,10 @@ CREATE_API = '/api/job/create'
 def api():
     app, api = get_app()
     yield app.test_client()
+
+    # 테스트 종류 후 실행되는 코드
+    # Job.json에 있는 내용들을 전부 지운다
+    generate_jobdatabase_engine().reset()
 
 
 def check_only_status(api, req_job, answer_code):
@@ -204,4 +208,4 @@ def test_success(api):
             'W2': {'task_name': 'write', 'filename': 'b.csv', 'sep': ','},
         }
     }
-    check_only_status(api, job, 400)
+    check_only_status(api, job, 201)

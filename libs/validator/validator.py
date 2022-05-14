@@ -1,5 +1,5 @@
 from abc import ABCMeta, abstractmethod
-from typing import Any, Callable, Optional
+from typing import Any, Callable, Optional, List
 
 
 class Validator(metaclass=ABCMeta):
@@ -8,7 +8,7 @@ class Validator(metaclass=ABCMeta):
     """
 
     @abstractmethod
-    def __call__(self, data: Any) -> bool:
+    def __call__(self, *args, **kwargs) -> bool:
         """
         Check if data is validator
         :returns True if data is valid
@@ -24,8 +24,6 @@ class AutomaticValidator(Validator):
     instead of overriting "__call__" function
     """
 
-    """ Input data type must be "data_type" """
-    data_type: type
 
     """
     Input data must be passed by this validator logic
@@ -33,33 +31,25 @@ class AutomaticValidator(Validator):
     """
     validate_logic: Callable
 
-    def __init__(self, data_type: type, validate_logic: Callable):
+    def __init__(self, validate_logic: Callable):
         """
         set data_type and validate_logic
-        :param data_type:
         :param validate_logic:
         """
-        if not isinstance(data_type, type):
-            raise TypeError("data_type must be type class")
-        self.data_type = data_type
 
         if not isinstance(validate_logic, Callable):
             raise TypeError("logic must be Callable Function")
         self.validate_logic = validate_logic
 
-    def __call__(self, data: Any) -> (bool, Optional[Exception]):
+    def __call__(self, *args, **kwargs) -> (bool, Optional[Exception]):
         """
         :param data: the data for check validator
         :return: (True, None) if data is valid, then Exception is None
         :return: (False, Exception) if data is not valid, then Exception is returned
         """
-
-        # check type of data
-        if not isinstance(data, self.data_type):
-            return False, Exception("Data Type Not Matched")
         try:
             # run validator logic for validator data
-            is_valid = self.validate_logic(data)
+            is_valid = self.validate_logic(**kwargs) if kwargs else self.validate_logic(*args)
         except Exception as e:
             # if is called exception Then return False
             return False, e

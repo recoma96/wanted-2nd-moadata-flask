@@ -1,5 +1,5 @@
 from typing import Dict, List
-from libs.algorithms import topological_sort
+from utils.algorithms import topological_sort
 
 
 def validate_job_list(graph: Dict[str, List[str]]) -> bool:
@@ -13,7 +13,7 @@ def validate_job_list(graph: Dict[str, List[str]]) -> bool:
 
 
 def validate_job_properties(job_names: List[str],
-                            properties: Dict[str, Dict[str, str]]) -> None:
+                            properties: Dict[str, Dict[str, str]]) -> bool:
     """
     job property의 유효성을 판단하는 함수
     :param job_names:
@@ -36,6 +36,7 @@ def validate_job_properties(job_names: List[str],
         read/write: filename, sep이 있어야 한다
         drop: column_name이 있어야 한다.
         """
+
         if (needs[task_name] | {'task_name'}) != set(p.keys()):
             return False
         return True
@@ -50,7 +51,7 @@ def validate_job_properties(job_names: List[str],
     if set(job_names) != set(properties):
         raise ValueError("jobs and properties does not equal")
 
-    for p in properties:
+    for p in properties.values():
         if not __check_property(p, needs):
             return False
     return True

@@ -1,6 +1,6 @@
 from flask_restful import Resource
 from flask import request, Response
-from utils.validator_chains import get_job_validator_chain
+from utils.jobdatabase import JobDatabaseEngine
 
 
 class JobCreateView(Resource):
@@ -8,11 +8,8 @@ class JobCreateView(Resource):
         """
         JOB 생성
         """
-        # json 데이터 얻기, 없으면 400 호출
-        data = request.get_json()
-        validator = get_job_validator_chain()
-        is_valid, err = validator(data)
-        if not is_valid:
+        res, success, err = JobDatabaseEngine().save(request.get_json())
+        if not success:
             # 유효성 실패
             return Response({'error', str(err)},
                             status=400,

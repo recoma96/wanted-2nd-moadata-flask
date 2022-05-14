@@ -33,10 +33,11 @@ class ValidatorChain:
 
     def __call__(self, data: Any) -> (bool, Optional[Exception]):
         for validator, pre_processor in self.validators:
-            pre_processed_data = data if not pre_processor else pre_processor(data)
+            pre_processed_data = [data] if not pre_processor else pre_processor(data)
             is_valid, err = False, None
             try:
-                is_valid, err = validator(pre_processed_data)
+                is_valid, err = validator(*pre_processed_data)
+
             except Exception as e:
                 is_valid, e = False, e
             if not is_valid:
