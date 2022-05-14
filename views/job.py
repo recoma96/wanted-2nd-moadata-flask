@@ -1,5 +1,5 @@
 from flask_restful import Resource
-from flask import request, Response
+from flask import request, Response, jsonify
 from utils.jobdatabase import JobDatabaseEngine
 
 
@@ -8,15 +8,11 @@ class JobCreateView(Resource):
         """
         JOB 생성
         """
-        res, success, err = JobDatabaseEngine().save(request.get_json())
+        job_id, success, err = JobDatabaseEngine().save(request.get_json())
         if not success:
             # 유효성 실패
-            return Response({'error', str(err)},
-                            status=400,
-                            mimetype='application/json')
-        return Response({'error': 'success'},
-                        status=201,
-                        mimetype='application/json')
+            return {"error": str(err)}, 400
+        return {'job_id': job_id}, 201
 
 
 class JobView(Resource):
@@ -24,7 +20,8 @@ class JobView(Resource):
         """
         아이디 검색
         """
-        return {"hello": "world"}
+        res_data, success, err = JobDatabaseEngine().get_item(job_id)
+        return ({"err": "Data Not Found"}, 404) if err else (res_data, 200)
 
     def patch(self, job_id):
         """
@@ -41,4 +38,4 @@ class JobView(Resource):
 
 class JobRunView(Resource):
     def get(self, job_id):
-        return  {"hello": "world"}
+        return {"hello": "world"}

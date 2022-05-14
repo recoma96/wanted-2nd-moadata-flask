@@ -8,11 +8,12 @@ class Validator(metaclass=ABCMeta):
     """
 
     @abstractmethod
-    def __call__(self, *args, **kwargs) -> (bool, Optional[Exception]):
+    def __call__(self, *args, **kwargs) \
+            -> (bool, Optional[Exception]):
         """
         Call 함수를 사용해서 data 유효성을 판별한다.
 
-        :returns True if data is valid
+        :return True if data is valid
         :return False if data is not valid and return Error Exception
         """
         pass
@@ -38,7 +39,8 @@ class AutomaticValidator(Validator):
             raise TypeError("logic must be Callable Function")
         self.validate_logic = validate_logic
 
-    def __call__(self, *args, **kwargs) -> (bool, Optional[Exception]):
+    def __call__(self, *args, **kwargs) \
+            -> (bool, Optional[Exception]):
         """
         :param *args or **kwargs: validate데이터
 

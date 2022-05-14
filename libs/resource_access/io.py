@@ -2,9 +2,6 @@ import _io
 from abc import ABCMeta
 
 
-JOB_DATABASE_ROOT = 'storage/jobs.json'
-
-
 class RawFileIO(metaclass=ABCMeta):
     """
     텍스트 파일 위주를 다루는 함수
@@ -36,15 +33,3 @@ class RawFileWrite(RawFileIO):
 
     def __enter__(self, mode: str = None):
         return super().__enter__('wt')
-
-
-class JobDatabaseRead(RawFileRead):
-
-    def __init__(self):
-        super().__init__(JOB_DATABASE_ROOT)
-
-
-class JobDatabaseWrite(RawFileWrite):
-
-    def __init__(self):
-        super().__init__(JOB_DATABASE_ROOT)

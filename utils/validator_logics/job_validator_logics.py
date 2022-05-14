@@ -2,7 +2,8 @@ from typing import Dict, List
 from utils.algorithms import topological_sort
 
 
-def validate_job_list(graph: Dict[str, List[str]]) -> bool:
+def validate_job_list(graph: Dict[str, List[str]])  \
+        -> bool:
     """
     job_list 의 유효성을 판단하는 함수
     :param graph:
@@ -13,7 +14,8 @@ def validate_job_list(graph: Dict[str, List[str]]) -> bool:
 
 
 def validate_job_properties(job_names: List[str],
-                            properties: Dict[str, Dict[str, str]]) -> bool:
+                            properties: Dict[str, Dict[str, str]])  \
+        -> bool:
     """
     job property의 유효성을 판단하는 함수
     :param job_names:
@@ -21,7 +23,8 @@ def validate_job_properties(job_names: List[str],
     :return:
     """
 
-    def __check_property(p: Dict[str, str], needs: Dict[str, str]) -> bool:
+    def __check_property(p: Dict[str, str], needs: Dict[str, str])  \
+            -> bool:
 
         # task_name이 반드시 property 안에 들어가야 한다.
         if 'task_name' not in p:
