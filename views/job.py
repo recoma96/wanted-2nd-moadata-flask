@@ -10,9 +10,6 @@ class JobCreateView(Resource):
     (POST)  /api/job/create     Job 생성
     """
     def post(self):
-        """
-        JOB 생성
-        """
         job_id, success, err = JobDatabaseEngine().save(request.get_json())
         if not success:
             # 유효성 실패
@@ -24,27 +21,18 @@ class JobView(Resource):
     """
     Job 데이터 관리 뷰
 
-    (GET)       /api/job/<int:job_id>   Job 정보 얻기
+    (GET)       /api/job/<int:job_id>   Job 정보 검색
     (PATCH)     /api/job/<int:job_id>   Job 수정
     (DELETE)    /api/job/<int:job_id>   Job 삭제
     """
     def get(self, job_id):
-        """
-        아이디 검색
-        """
         res_data, success, err = JobDatabaseEngine().get_item(job_id)
         return ({'err': 'Data Not Found'}, 404) if err else (res_data, 200)
 
     def patch(self, job_id):
-        """
-        데이터 수정
-        """
         return {'hello': 'world'}
 
     def delete(self, job_id):
-        """
-        데이터 삭제
-        """
         success, err = JobDatabaseEngine().remove(job_id)
         if err:
             return ({'err': str(err)}), 400
