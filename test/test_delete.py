@@ -42,10 +42,13 @@ def api():
 
 
 def test_remove_success(api):
-    deleted_id = 2
-    assert api.delete(f'{API}/{deleted_id}').status_code == 204
+    assert api.delete(f'{API}/1').status_code == 204
+    assert api.delete(f'{API}/2').status_code == 204
+    assert api.delete(f'{API}/3').status_code == 204
     # 2번 job이 데이터아 남아있으면 안된다.
-    assert api.get(f'{API}/{deleted_id}').status_code == 404
+    assert api.get(f'{API}/1').status_code == 404.
+    assert api.get(f'{API}/2').status_code == 404.
+    assert api.get(f'{API}/3').status_code == 404
 
 
 def test_not_found(api):
