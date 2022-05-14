@@ -8,7 +8,7 @@ class ValidatorChain:
     """
 
     """
-    Validator List
+    Validators
     요소는 Tuple type으로 저장되는데 첫번 째는 Validator, 두번째는 함수가 된다.
     이 함수들은 검수 대상의 데이터를 Validator가 원하는 데이터 타입으로 가공하는데 사용되는
     전처리 함수가 된다.

@@ -120,9 +120,30 @@ class JobDatabaseEngine:
             (res, True, None) if success    \
             else (None, False, ValueError(f"Failed to find id: {job_id}"))
 
-    def remove(self, job_id: int):
+    def remove(self, job_id: int) \
+            -> (bool, Optional[Exception]):
+        """
+        job_id 데이터 삭제
+        :param job_id: 
+        :return: 
+        """
         @lock_while_using_file(self.mutex)
-        def __remove():
-            pass
+        def __remove() -> bool:
+            # Json에서 데이터 가져오기
+            with JobDatabaseRead() as r:
+                storage = json.load(r)['jobs']
+            # 삭제할 데이터 검색
+            is_exists, idx = search_job_by_job_id(storage, job_id)
+            if not is_exists:
+                return False
+            # 데이터 삭제 및 파일 갱신
+            del storage[idx]
+            with JobDatabaseWrite() as w:
+                json.dump(storage, w, indent=4)
+            return True
 
-        return __remove()
+        try:
+            success = __remove()
+        except Exception as e:
+            return False, e
+        return (True, None) if success else (False, None)
