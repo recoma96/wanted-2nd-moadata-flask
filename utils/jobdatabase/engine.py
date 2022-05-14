@@ -82,10 +82,34 @@ class JobDatabaseEngine:
             (None, False, err) if not is_valid or err   \
             else (__save(), True, None)
 
-    def update(self, job_id: int, updated_data: Dict[str, Any]):
+    def update(self, job_id: int, updated_data: Dict[str, Any]) \
+            -> (bool, Optional[Exception]):
+        """
+        해당 JOB_ID 에 대한 정보를 변경한다.
+        :param job_id:
+        :param updated_data:
+        :return:
+        """
         @lock_while_using_file(self.mutex)
         def __update():
-            pass
+            with JobDatabaseRead() as r:
+                all_data = json.load(r)
+                storage = all_data['jobs']
+            # search data
+            is_exists, idx = search_job_by_job_id(storage, job_id)
+            if not is_exists:
+                return False, None
+            # validate data
+            is_valid, err = self.validator(updated_data)
+            if not is_valid:
+                return False, err
+            # update
+            updated_data['job_id'] = job_id
+            all_data['jobs'][idx] = updated_data
+            # save
+            with JobDatabaseWrite() as w:
+                json.dump(all_data, w, indent=4)
+            return True, None
 
         return __update()
 
@@ -131,15 +155,17 @@ class JobDatabaseEngine:
         def __remove() -> bool:
             # Json에서 데이터 가져오기
             with JobDatabaseRead() as r:
-                storage = json.load(r)['jobs']
+                all_data = json.load(r)
+                storage = all_data['jobs']
             # 삭제할 데이터 검색
             is_exists, idx = search_job_by_job_id(storage, job_id)
             if not is_exists:
                 return False
             # 데이터 삭제 및 파일 갱신
             del storage[idx]
+            all_data['jobs'] = storage
             with JobDatabaseWrite() as w:
-                json.dump(storage, w, indent=4)
+                json.dump(all_data, w, indent=4)
             return True
 
         try:

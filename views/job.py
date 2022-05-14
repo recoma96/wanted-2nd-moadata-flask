@@ -30,7 +30,13 @@ class JobView(Resource):
         return ({'err': 'Data Not Found'}, 404) if err else (res_data, 200)
 
     def patch(self, job_id):
-        return {'hello': 'world'}
+        success, err = JobDatabaseEngine().update(job_id, request.get_json())
+        if not success and err:
+            return {'error': str(err)}, 400
+        elif not success and not err:
+            return {'error': 'job_id not found'}, 404
+        else:
+            return {'error': 'success'}, 201
 
     def delete(self, job_id):
         success, err = JobDatabaseEngine().remove(job_id)
