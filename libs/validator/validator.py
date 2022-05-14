@@ -1,57 +1,55 @@
 from abc import ABCMeta, abstractmethod
-from typing import Any, Callable, Optional, List
+from typing import Callable, Optional
 
 
 class Validator(metaclass=ABCMeta):
     """
-    The Validator Interface (Superclass)
+    자체 Validator Interface
     """
 
     @abstractmethod
-    def __call__(self, *args, **kwargs) -> bool:
+    def __call__(self, *args, **kwargs) -> (bool, Optional[Exception]):
         """
-        Check if data is validator
+        Call 함수를 사용해서 data 유효성을 판별한다.
+
         :returns True if data is valid
-        :return False if data is not valid
+        :return False if data is not valid and return Error Exception
         """
         pass
 
 
 class AutomaticValidator(Validator):
     """
-    AutomaticValidator is the child class from Validator that is Validator Interface.
-    just input "Data Type" and "Validate Logic" when construct this class
-    instead of overriting "__call__" function
+    Validator로부터 상속받는 클래스로 Validator Class에서 Validator를 만드려면
+    Validator를 직접 상속받고 __call__ 함수를 오버라이딩 해야 하지만
+    AutomaticValidator는 따로 상속 없이 Validator Logic함수만 추가하면 된다.
     """
 
-
     """
-    Input data must be passed by this validator logic
-    Recomented about function which return type is bool or has Exception
+    validate 로직 함수, 리턴 값이 bool인 함수를 권장한다.
     """
     validate_logic: Callable
 
     def __init__(self, validate_logic: Callable):
         """
-        set data_type and validate_logic
-        :param validate_logic:
+        validate 함수 추가
         """
-
         if not isinstance(validate_logic, Callable):
             raise TypeError("logic must be Callable Function")
         self.validate_logic = validate_logic
 
     def __call__(self, *args, **kwargs) -> (bool, Optional[Exception]):
         """
-        :param data: the data for check validator
+        :param *args or **kwargs: validate데이터
+
         :return: (True, None) if data is valid, then Exception is None
         :return: (False, Exception) if data is not valid, then Exception is returned
         """
         try:
-            # run validator logic for validator data
-            is_valid = self.validate_logic(**kwargs) if kwargs else self.validate_logic(*args)
+            # Validate 판별
+            is_valid = self.validate_logic(*args, **kwargs)
         except Exception as e:
-            # if is called exception Then return False
+            # Validate에서 Excrption이 호출되면 False 처리
             return False, e
 
         if isinstance(is_valid, bool) and not is_valid:

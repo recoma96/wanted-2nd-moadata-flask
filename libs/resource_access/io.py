@@ -1,10 +1,15 @@
 import _io
 from abc import ABCMeta
 
+
 JOB_DATABASE_ROOT = 'storage/jobs.json'
 
 
 class RawFileIO(metaclass=ABCMeta):
+    """
+    텍스트 파일 위주를 다루는 함수
+    주로 with문과 함께 쓰인다.
+    """
     file_root: str
     fd: _io.TextIOWrapper
 

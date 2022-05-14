@@ -37,3 +37,8 @@ class JobView(Resource):
         데이터 삭제
         """
         return {"hello": "world"}
+
+
+class JobRunView(Resource):
+    def get(self, job_id):
+        return  {"hello": "world"}

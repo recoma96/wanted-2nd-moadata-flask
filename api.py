@@ -1,6 +1,6 @@
 from flask import Flask
 from flask_restful import Api
-from views.job import JobView, JobCreateView
+from views.job import JobView, JobCreateView, JobRunView
 
 from utils.jobdatabase import JobDatabaseEngine
 
@@ -19,6 +19,7 @@ def __set_app():
 def __set_uris(api):
     api.add_resource(JobView, '/api/job/<int:job_id>')
     api.add_resource(JobCreateView, '/api/job/create')
+    api.add_resource(JobRunView, '/api/job/run/<int:job_id>')
 
 
 def get_app():
