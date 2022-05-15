@@ -1,6 +1,6 @@
 from flask_restful import Resource
 from flask import request
-from utils.jobdatabase import JobDatabaseEngine
+from utils.job_database import JobDatabaseEngine
 
 
 class JobCreateView(Resource):

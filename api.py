@@ -2,7 +2,7 @@ from flask import Flask
 from flask_restful import Api
 from views.job import JobView, JobCreateView, JobRunView
 
-from utils.jobdatabase import JobDatabaseEngine
+from utils.job_database import JobDatabaseEngine
 
 
 def generate_jobdatabase_engine():

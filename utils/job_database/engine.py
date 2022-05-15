@@ -1,7 +1,7 @@
 from libs.resource_access import lock_while_using_file
 from utils.algorithms import topological_sort
-from utils.jobdatabase.default_algorithm import search_job_by_job_id
-from utils.jobdatabase.io import JobDatabaseRead, JobDatabaseWrite
+from utils.job_database.default_algorithm import search_job_by_job_id
+from utils.job_database.io import JobDatabaseRead, JobDatabaseWrite
 from threading import Lock
 from typing import Dict, Any, Optional
 import json
@@ -10,7 +10,7 @@ import os
 import pandas as pd
 
 from libs.validator import ValidatorChain
-from utils.jobdatabase.task import task_read, task_write, task_drop_column
+from utils.job_database.task import task_read, task_write, task_drop_column
 from utils.validator_chains import get_job_validator_chain
 
 
