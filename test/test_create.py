@@ -80,22 +80,16 @@ def test_no_double_of_one_edge(api):
     job = {
         'job_name': 'Job1',
         'task_list': {
-            'R1': ['W1', 'W2'],
+            'R1': ['W1', 'W2', 'W1'],
             'W1': ['D1'],
             'W2': ['D1'],
             'D1': [],
-            'D2': ['W3', 'W4'],
-            'W3': [],
-            'W4': [],
         },
         'property': {
             'R1': {'task_name': 'read', 'filename': 'a.csv', 'sep': ','},
             'W1': {'task_name': 'write', 'filename': 'a.csv', 'sep': ','},
             'W2': {'task_name': 'write', 'filename': 'b.csv', 'sep': ','},
-            'W3': {'task_name': 'write', 'filename': 'c.csv', 'sep': ','},
-            'W4': {'task_name': 'write', 'filename': 'd.csv', 'sep': ','},
             'D1': {'task_name': 'drop', 'column_name': 'column1'},
-            'D2': {'task_name': 'drop', 'column_name': 'column2'},
         }
     }
     check_only_status(api, job, 400)
