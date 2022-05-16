@@ -53,3 +53,13 @@ RawFileWrite구현을 위해 구현된 추상클래스
   |Type|Comment|
   |---|---|
   |```Exception```|데코레이터가 적용된 함수가 호출하는 모든 ```Exception```을 그대로 호출한다.
+* Example
+  ```python
+  from threading import Lock
+  
+  locker = Lock()
+  
+  @lock_while_using_file(locker)
+  def foo(*args, **kwargs):
+    # do something
+  ```
