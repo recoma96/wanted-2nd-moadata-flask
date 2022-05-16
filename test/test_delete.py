@@ -46,8 +46,8 @@ def test_remove_success(api):
     assert api.delete(f'{API}/2').status_code == 204
     assert api.delete(f'{API}/3').status_code == 204
     # 2번 job이 데이터아 남아있으면 안된다.
-    assert api.get(f'{API}/1').status_code == 404.
-    assert api.get(f'{API}/2').status_code == 404.
+    assert api.get(f'{API}/1').status_code == 404
+    assert api.get(f'{API}/2').status_code == 404
     assert api.get(f'{API}/3').status_code == 404
 
 

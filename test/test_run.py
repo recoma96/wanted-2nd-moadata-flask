@@ -193,6 +193,6 @@ def test_with_remove_column(api):
     # 부검
     output = pd.read_csv(f'{STORAGE_ROOT}/{writed_profile[0]}')
     assert set(output.columns.values.tolist()) == set(writed_profile[1])
-    
+
     output = pd.read_csv(f'{STORAGE_ROOT}/{writed_sns[0]}')
     assert set(output.columns.values.tolist()) == set(writed_sns[1])
