@@ -18,7 +18,7 @@ def __merge_data_frames(left_frame: pd.DataFrame, right_frame: pd.DataFrame)    
     common_cols = left_cols & right_cols
     if common_cols:
         # 동일한 column이 존재하는 경우 동일 column대로 병합
-        return pd.merge(left_frame, right_frame, how='left', on=list(common_cols))
+        return pd.merge(left_frame, right_frame, how='outer', on=list(common_cols))
     # 없는 경우 그냥 column을 합친다.
     return pd.concat([left_frame, right_frame], axis=1)
 
@@ -48,7 +48,7 @@ def __send_data_to_next(graph, buffer, dataframe, start_task)   \
     """
     for next_task in graph[start_task]:
         # 여러 방향으로 보낼 수 있기 때문에 copy()를 사용한다.
-        buffer[next_task].appendleft(dataframe.copy())
+        buffer[next_task].appendleft(pd.DataFrame.copy(dataframe))
 
 
 def task_read(graph: Dict[str, List[str]],
@@ -114,4 +114,5 @@ def task_drop_column(graph: Dict[str, List[str]],
     except Exception:
         # 해당 컬럼이 없으면 그냥 지나감
         pass
+
     __send_data_to_next(graph, buffer, data_frame, task_name)
