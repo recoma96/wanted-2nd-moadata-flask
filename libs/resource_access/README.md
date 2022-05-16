@@ -13,7 +13,8 @@ RawFileWrite구현을 위해 구현된 추상클래스
 * 분류: Class
 * 상위 클래스: RawFileIO
 * text File을 ```with``` 문을 이용해 읽기 위해 구현된 클래스
-* Example
+
+#### Example
     ```python
     with RawFileRead('file.txt') as r:
         json_data = json.load(r)
@@ -23,7 +24,9 @@ RawFileWrite구현을 위해 구현된 추상클래스
 * 분류: Class
 * 상위 클래스: RawFileIO
 * text File을 ```with``` 문을 이용해 쓰기 위해 구현된 클래스
-* Example
+
+#### Example
+
     ```python
     with RawFileWrite('new.txt') as w:
         w.write("hello world\n")
@@ -53,7 +56,9 @@ RawFileWrite구현을 위해 구현된 추상클래스
   |Type|Comment|
   |---|---|
   |```Exception```|데코레이터가 적용된 함수가 호출하는 모든 ```Exception```을 그대로 호출한다.
-* Example
+
+#### Example
+
   ```python
   from threading import Lock
   

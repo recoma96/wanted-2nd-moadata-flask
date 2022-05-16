@@ -175,16 +175,16 @@
 ## Module Structure
 libs/urls의 Module Structure 입니다. 링크를 통해 자세한 설명을 볼 수 있습니다.
 * libs
-  * [io](libs/resource_access)
-    * RawFileIO _(class)_
+  * [io](libs/resource_access#io)
+    * RawFileIO _(abstract class)_
     * RawFileRead _(class)_
     * RawFileWrite _(class)_
   * [io_locker](libs/resource_access#lock_while_using_file)
     * lock_while_using_file _(**decorator** function)_
   * [validator](libs/validator)
-    * Validator _(class)_
-    * AutomaticValidator _(class)_
-    * **ValidatorChain** _(class)_
+    * [Validator](libs/validator#Validator) _(abstract class)_
+    * [AutomaticValidator](libs/validator#AutomaticValidator) _(class)_
+    * [**ValidatorChain**](libs/validator#ValidatorChain) _(class)_
 * utils
   * algorithms
     * job_data_searcher _(function)_
