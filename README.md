@@ -29,6 +29,165 @@
       3. 그 작업된 데이터를 ```c```와 합치고
       4. 합친 데이터를 ```task3```에서 작업을 하게 된다.
 
+
+
+
+## Directory Sturcture
+```tree
+├───storage
+│   │   jobs.json
+│   └───data
+├───utils
+│   │   validator_chains.py
+│   ├───algorithms
+│   ├───job_database
+│   └───validator_logics
+├───libs
+│   ├───resource_access
+│   └───validator
+├───test
+├───views
+└───api.py
+```
+* **storage**: Job을 관리하는 파일 ```jobs.json``` 과 csv파일이 들어잇는 ```data``` 가 있습니다. ```a.csv```파일이 기본적으로 들어가 있습니다.
+* **utils**: 해당 프로젝트를 구현하기 위한 기능 라이브러리 입니다.
+  * validator_chains: job data의 유효성을 판별하기 위한 Validator Chain이 정의되어 있습니다. Validator Chain에 대한 내용은 이곳에서 확인하실 수 있습니다.
+  * algorithms: 하드코딩된 알고리즘이 정의되어 있습니다.
+  * job_database: Job.json을 관리 또는 Job Data를 토대로 Task를 실행하는 JobDatabase가 정의되어 있습니다.
+  * validator_logics: Validator 최소 단위 함수가 정의되어 있습니다.
+* **libs**: utils의 모듈을 구현하기 위해 자체구현된 Base Library로 utils의 모듈과는 다르게 범용성을 목적으로 구현되었기 때문에 **다른 프로젝트에서도 재활용이 가능합니다.**
+  * resource_access: 외부 엑세스(파일 등..)접근과 관련된 기능이 정의되어 있습니다.
+  * validator: Validator가 따로 없는(SQLAlchemy 제외) Flask를 위해 자체 제작되었습니다.
+* **test**: 테스트 코드
+* **views**: API가 정의되어 있습니다.
+* **api.py**: 처음으로 실행되는 최상위 파일 입니다. DJango의 manage.py와 유사한 가능을 합니다.
+
+## API Documentation
+### CRUD
+#### Job 생성
+
+|Method|uri|
+|---|---|
+|POST|```/api/job/create```|
+
+* Input[json]
+  ```json
+  {
+    "job_name": "<Job 이름>",
+    "task_list": {
+      "<출발 지점>": ["<목표 지점1>", "<목표 지점2>", "..."],
+      ...
+    },
+    "property": {
+      "<출발 지점1>": {"<task_name>": "<Task 종류>", "..."},
+      ...
+    }
+  }
+  ```
+* Output
+  * (200)
+    ```json
+    {"job_id": "<job id>"}
+    ```
+  * (400)
+    * 정상적인 데이터가 아님
+
+
+#### Job 정보 얻기
+
+|Method|uri|
+|---|---|
+|GET|```/api/job/<int:job_id>```|
+
+* Input
+  * 없음
+* Output
+  * (200)
+    ```json
+    {
+      "job_id": "<Job ID>",
+      "job_name": "<Job 이름>",
+      "task_list": {
+        "<출발 지점>": ["<목표 지점1>", "<목표 지점2>", "..."],
+        ...
+      },
+      "property": {
+        "<출발 지점1>": {"<task_name>": "<Task 종류>", "..."},
+        ...
+      }
+    }
+    ```
+
+#### Job 정보 수정
+
+|Method|uri|
+|---|---|
+|PATCH|```/api/job/<int:job_id>```|
+
+* Input[json]
+  ```json
+  {
+    "job_name": "<Job 이름>",
+    "task_list": {
+      "<출발 지점>": ["<목표 지점1>", "<목표 지점2>", "..."],
+      ...
+    },
+    "property": {
+      "<출발 지점1>": {"<task_name>": "<Task 종류>", "..."},
+      ...
+    }
+  }
+  ```
+* Output
+  * (200) 성공
+  * (400) 알맞지 않은 데이터
+  * (404) 해당 job id에 대한 데이터를 찾을 수 없음
+
+#### Job 삭제
+
+|Method|uri|
+|---|---|
+|DELETE|```/api/job/<int:job_id>```|
+
+* Input
+  * 없음
+* Output
+  * (200) 성공
+  * (404) 데이터 없음
+
+### Run Task
+
+|Method|uri|
+|---|---|
+|GET|```/api/job/run/<int:job_id>```|
+
+
+* Input
+  * 없음
+* Output
+  * (200) 성공
+  * (404) 데이터 없음
+
+## Module Documentation
+코드의 빠른 이해를 위한 utils/libs의 클래스/함수 사이트맵 입니다.
+* libs
+  * io
+    * RawFileIO _(class)_
+    * RawFileRead _(class)_
+    * RawFileWrite _(class)_
+  * io_locker
+    * lock_while_using_file _(**decorator** function)_
+  * validator
+    * Validator _(class)_
+    * AutomaticValidator _(class)_
+    * **ValidatorChain** _(class)_
+* utils
+  * algorithms
+    * job_data_searcher _(function)_
+    * sorting_graph _(function)_
+  * **JobDatabase** _(class)_
+  * get_job_validator_chain _(function - (class instance generator))_
+
 ## Algorithm
 ### Binary Search (이분 탐색)
 ```job.json```의 데이터가 생성될 때, ```job id```를 부여하는 과정은 ```job.json``` 이 비어있을 경우,
@@ -98,62 +257,6 @@ def __topological_sort(g, p) -> List[str]:
         raise ValueError("순환 사이클 감지")
     return sorted_data
 ```
-
-
-
-## Directory Sturcture
-```tree
-├───storage
-│   │   jobs.json
-│   └───data
-├───utils
-│   │   validator_chains.py
-│   ├───algorithms
-│   ├───job_database
-│   └───validator_logics
-├───libs
-│   ├───resource_access
-│   └───validator
-├───test
-├───views
-└───api.py
-```
-* **storage**: Job을 관리하는 파일 ```jobs.json``` 과 csv파일이 들어잇는 ```data``` 가 있습니다. ```a.csv```파일이 기본적으로 들어가 있습니다.
-* **utils**: 해당 프로젝트를 구현하기 위한 기능 라이브러리 입니다.
-  * validator_chains: job data의 유효성을 판별하기 위한 Validator Chain이 정의되어 있습니다. Validator Chain에 대한 내용은 이곳에서 확인하실 수 있습니다.
-  * algorithms: 하드코딩된 알고리즘이 정의되어 있습니다.
-  * job_database: Job.json을 관리 또는 Job Data를 토대로 Task를 실행하는 JobDatabase가 정의되어 있습니다.
-  * validator_logics: Validator 최소 단위 함수가 정의되어 있습니다.
-* **libs**: utils의 모듈을 구현하기 위해 자체구현된 Base Library로 utils의 모듈과는 다르게 범용성을 목적으로 구현되었기 때문에 **다른 프로젝트에서도 재활용이 가능합니다.**
-  * resource_access: 외부 엑세스(파일 등..)접근과 관련된 기능이 정의되어 있습니다.
-  * validator: Validator가 따로 없는(SQLAlchemy 제외) Flask를 위해 자체 제작되었습니다.
-* **test**: 테스트 코드
-* **views**: API가 정의되어 있습니다.
-* **api.py**: 처음으로 실행되는 최상위 파일 입니다. DJango의 manage.py와 유사한 가능을 합니다.
-
-## API Documentation
-s
-
-## Module Documentation
-코드의 빠른 이해를 위한 utils/libs의 클래스/함수 사이트맵 입니다.
-* libs
-  * io
-    * RawFileIO _(class)_
-    * RawFileRead _(class)_
-    * RawFileWrite _(class)_
-  * io_locker
-    * lock_while_using_file _(**decorator** function)_
-  * validator
-    * Validator _(class)_
-    * AutomaticValidator _(class)_
-    * **ValidatorChain** _(class)_
-* utils
-  * algorithms
-    * job_data_searcher _(function)_
-    * sorting_graph _(function)_
-  * **JobDatabase** _(class)_
-  * get_job_validator_chain _(function - (class instance generator))_
-
 
 ## DFD
 ## Sequence Diagram

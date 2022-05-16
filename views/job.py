@@ -55,6 +55,11 @@ class JobView(Resource):
 
 
 class JobRunView(Resource):
+    """
+    Job 실행 뷰
+
+    (GET)   /api/job/run/<int:job_id>   실행
+    """
     def get(self, job_id):
         try:
             JobDatabaseEngine().run(job_id)
