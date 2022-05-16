@@ -15,7 +15,7 @@
   * JOB 저장: 입력받은 Job의 정보를 job.json파일에 저장
   * JOB 삭제: 입력 받은 job id를 job.json에 찾아 삭제 후 저장
   * JOB 수정: 전달 받은 job id를 job.json에 찾아 수정 후 저장
-  * JOB 실행: 전달 받은 job id를 job.json에 찾앗 수행
+  * JOB 실행: 전달 받은 job id를 job.json에 찾아 수행
   * Task
     * read: 해당 파일을 읽어 ```pandas.DataFrame```으로 출력
     * drop: ```panads.DataFrame```의 특정 컬럼을 제거
@@ -29,7 +29,11 @@
       3. 그 작업된 데이터를 ```c```와 합치고
       4. 합친 데이터를 ```task3```에서 작업을 하게 된다.
 
-
+## 개발환경
+* Language: Python
+* Framework: Flask
+* IDE: Pycharm
+* Test Module: pytest
 
 
 ## Directory Sturcture
@@ -171,11 +175,11 @@
 ## Module Documentation
 코드의 빠른 이해를 위한 utils/libs의 클래스/함수 사이트맵 입니다.
 * libs
-  * io
+  * [io](libs/resource_access)
     * RawFileIO _(class)_
     * RawFileRead _(class)_
     * RawFileWrite _(class)_
-  * io_locker
+  * [io_locker](libs/resource_access)
     * lock_while_using_file _(**decorator** function)_
   * validator
     * Validator _(class)_
