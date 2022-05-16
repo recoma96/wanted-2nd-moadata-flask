@@ -53,12 +53,12 @@ class JobDatabaseEngine:
         with JobDatabaseWrite() as w:
             json.dump({'jobs': []}, w, indent=4)
 
-        # 모든 csv 파일을 삭제하고 a.csv 만 초기화
+        # 모든 csv 파일을 삭제하고
         BASE_DIR = 'storage/data'
-
         for f in os.scandir(BASE_DIR):
             os.remove(f.path)
 
+        # a.csv 초기화
         df = pd.DataFrame({
             'col0': ['data00', 'data01'],
             'col1': ['data10', 'data11']
@@ -66,12 +66,15 @@ class JobDatabaseEngine:
         df.to_csv(f'{BASE_DIR}/a.csv', index=False)
 
     def save(self, job: Dict[str, Any]) \
-            -> (Optional[int], bool, Optional[Exception]):
+        -> int:
         """
         새로운 Job을 json에 저장
 
         :param job: 추가하고자 하는 데이터
-        :return: (Job ID, success(True, False), Exception(if success then None)
+
+        :return: 새로 생성된 Job ID
+
+        :exception ValieError: 추가하려는 데이터가 잘못된 경우
         """
 
         @lock_while_using_file(self.mutex)
@@ -100,12 +103,17 @@ class JobDatabaseEngine:
 
         # Validate 판정
         is_valid, err = self.validator(job)
-        return \
-            (None, False, err) if not is_valid or err \
-                else (__save(), True, None)
+        if err:
+            raise err
+        try:
+            job_id = __save()
+        except Exception as e:
+            raise e
+        else:
+            return job_id
 
     def update(self, job_id: int, updated_data: Dict[str, Any]) \
-            -> (bool, Optional[Exception]):
+            -> bool:
         """
         해당 JOB_ID 에 대한 정보를 변경한다.
 
@@ -122,57 +130,59 @@ class JobDatabaseEngine:
             # search data
             is_exists, idx = search_job_by_job_id(storage, job_id)
             if not is_exists:
-                return False, None
+                raise ValueError('Data Not Found')
             # validate data
             is_valid, err = self.validator(updated_data)
             if not is_valid:
-                return False, err
+                return False
             # update
             updated_data['job_id'] = job_id
             all_data['jobs'][idx] = updated_data
             # save
             with JobDatabaseWrite() as w:
                 json.dump(all_data, w, indent=4)
-            return True, None
+            return True
 
         return __update()
 
-    def get_item(self, job_id: int) \
-            -> (Optional[Dict[str, Any]], bool, Optional[Exception]):
+    def get_item(self, job_id: int) -> Dict[str, Any]:
         """
         job_id에 대한 Job Data 얻기
 
-        :param job_id:
-        :return: (Result Data (None if not exists), is_success, the exception if get error)
+        :param job_id: 찾고자 하는 Job의 ID
+
+        :return:  job id에 데한 정보
+
+        :exception ValueError: 찾고자 하는 데이터가 없음
+        :exception Exception: 주로 job.json파일이 없어서 발생하는 에러
         """
 
         @lock_while_using_file(self.mutex)
-        def __get_item() -> (bool, Optional[Dict[str, Any]]):
+        def __get_item() -> Optional[Dict[str, Any]]:
             """
             파일에 직접 접근하여 데이터 구하기
-            :return: ((True/False), Exception if has error while using file)
+            :return: Job_ID에 대한 정보, 못찾으면 None Return
             """
             with JobDatabaseRead() as r:
                 storage = json.load(r)['jobs']
                 # idx -> job_id의 데이터가 위치해 있는 인덱스 값
                 is_exists, idx = search_job_by_job_id(storage, job_id)
-            if not is_exists:
-                return False, None
-            else:
-                return True, storage[idx]
+            return storage[idx] if is_exists else None
 
         try:
             # 파일에 접근해서 데이터 찾기
-            success, res = __get_item()
+            res = __get_item()
         except Exception as e:
             # 파일 상의 에러 발생
-            return None, False, e
-        return \
-            (res, True, None) if success \
-                else (None, False, ValueError(f"Failed to find id: {job_id}"))
+            raise e
+        else:
+            if not res:
+                raise ValueError(f'Failed to find id: {job_id}')
+            else:
+                return res
 
     def remove(self, job_id: int) \
-            -> (bool, Optional[Exception]):
+            -> bool:
         """
         job_id 데이터 삭제
 
@@ -200,8 +210,8 @@ class JobDatabaseEngine:
         try:
             success = __remove()
         except Exception as e:
-            return False, e
-        return (True, None) if success else (False, None)
+            raise e
+        return True if success else False
 
     def run(self, job_id: int):
         """
@@ -225,9 +235,10 @@ class JobDatabaseEngine:
                                      task, properties[task]['column_name'])
 
         # 데이터 가져오기
-        data, success, err = self.get_item(job_id)
-        if not success:
-            raise ValueError("Data Not Found")
+        try:
+            data = self.get_item(job_id)
+        except ValueError as e:
+            raise e
         graph, properties = data['task_list'], data['property']
         # DataFrame Buffer 생성하기
         data_frame_buffer = {k: collections.deque() for k in properties.keys()}

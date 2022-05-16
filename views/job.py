@@ -11,11 +11,12 @@ class JobCreateView(Resource):
     """
 
     def post(self):
-        job_id, success, err = JobDatabaseEngine().save(request.get_json())
-        if not success:
-            # 유효성 실패
-            return {'error': str(err)}, 400
-        return {'job_id': job_id}, 201
+        try:
+            job_id = JobDatabaseEngine().save(request.get_json())
+        except Exception as e:
+            return {'error': str(e)}, 400
+        else:
+            return {'job_id': job_id}, 201
 
 
 class JobView(Resource):
@@ -28,30 +29,37 @@ class JobView(Resource):
     """
 
     def get(self, job_id):
-        res_data, success, err = JobDatabaseEngine().get_item(job_id)
-        return ({'err': 'Data Not Found'}, 404) if err else (res_data, 200)
+        try:
+            res_data = JobDatabaseEngine().get_item(job_id)
+        except ValueError:
+            return {'err': 'Data Not Found'}, 404
+        except Exception:
+            return {'err': 'Server Error'}, 500
+        else:
+            return res_data, 200
 
     def patch(self, job_id):
-        success, err = JobDatabaseEngine().update(job_id, request.get_json())
-        if not success and err:
-            # Error가 발생한 경우
-            return {'error': str(err)}, 400
-        elif not success and not err:
-            # job_id에 해당되는 데이터를 못찾은 경우
-            return {'error': 'job_id not found'}, 404
-        else:
-            # 성공
-            return {'error': 'success'}, 201
+        try:
+            success = JobDatabaseEngine().update(job_id, request.get_json())
+        except ValueError:
+            return {'error': 'data not found'}, 404
+        except Exception:
+            return {'error': 'server error'}, 500
+
+        if not success:
+            return {'error': 'Data valid failed'}, 400
+        return {'error': 'success'}, 201
 
     def delete(self, job_id):
-        success, err = JobDatabaseEngine().remove(job_id)
-        if err:
-            # 내부 에러
-            return ({'err': str(err)}), 400
+        try:
+            success = JobDatabaseEngine().remove(job_id)
+        except Exception:
+            return {'error': 'server error'}, 500
+
+        if success:
+            return {'deleted': job_id}, 204
         else:
-            return \
-                ({'err': 'data not found'}, 404) if not success \
-                else ({'deleted': job_id}, 204)
+            return {'error': 'data not found'}, 404
 
 
 class JobRunView(Resource):
