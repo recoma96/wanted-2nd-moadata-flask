@@ -2,10 +2,12 @@
 2차 원티드 프리온보딩 - 모아데이타 기업 과제 (개인 작업, Flask)
 
 <center>
+<div style="display: flex">
     <img src="https://img.shields.io/badge/Python 3.9-FFD43B?style=flat-square&logo=python&logoColor=blue" />
     <img src="https://img.shields.io/badge/Flask Resful-000000?style=flat-square&logo=flask&logoColor=white" />
     <img src="https://img.shields.io/badge/Pandas-2C2D72?style=flat-square&logo=pandas&logoColor=white" />
     <img src="https://img.shields.io/badge/json-5E5C5C?style=flat-square&logo=json&logoColor=white" />
+</div>
 </center>
 
 ## 요구사항
@@ -130,6 +132,7 @@ def __topological_sort(g, p) -> List[str]:
 * **api.py**: 처음으로 실행되는 최상위 파일 입니다. DJango의 manage.py와 유사한 가능을 합니다.
 
 ## API Documentation
+s
 
 ## Module Documentation
 코드의 빠른 이해를 위한 utils/libs의 클래스/함수 사이트맵 입니다.
