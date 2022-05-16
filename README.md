@@ -172,16 +172,16 @@
   * (200) 성공
   * (404) 데이터 없음
 
-## Module Documentation
-코드의 빠른 이해를 위한 utils/libs의 클래스/함수 사이트맵 입니다.
+## Module Structure
+libs/urls의 Module Structure 입니다. 링크를 통해 자세한 설명을 볼 수 있습니다.
 * libs
   * [io](libs/resource_access)
     * RawFileIO _(class)_
     * RawFileRead _(class)_
     * RawFileWrite _(class)_
-  * [io_locker](libs/resource_access)
+  * [io_locker](libs/resource_access#lock_while_using_file)
     * lock_while_using_file _(**decorator** function)_
-  * validator
+  * [validator](libs/validator)
     * Validator _(class)_
     * AutomaticValidator _(class)_
     * **ValidatorChain** _(class)_
