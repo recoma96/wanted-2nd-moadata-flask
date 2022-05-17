@@ -29,12 +29,35 @@
       3. 그 작업된 데이터를 ```c```와 합치고
       4. 합친 데이터를 ```task3```에서 작업을 하게 된다.
 
-## 개발환경
-* Language: Python
-* Framework: Flask
-* IDE: Pycharm
-* Test Module: pytest
 
+## How to run Application
+### Run
+* repository를 다운받습니다
+  ```
+  git clone <>
+  ```
+* requirements.txt를 이용해 패키지를 다운받습니다.
+  ```
+  pip install -r requirements.txt
+  ```
+* ```api.py```를 실행합니다.
+  ```
+  python api.py
+  ```
+
+### Test
+* repository를 다운받습니다
+  ```
+  git clone <>
+  ```
+* requirements.txt를 이용해 패키지를 다운받습니다.
+  ```
+  pip install -r requirements.txt
+  ```
+* pytest를 실행합니다.
+  ```
+  pytest test
+  ```
 
 ## Directory Sturcture
 ```tree
@@ -232,9 +255,7 @@ def search_job_by_binary_search(storage: List[Dict[str, Any]], job_id: int) \
 
 ### Topological Sort (위상 정렬)
 
-DAG에서의 실행 순서는 단순히 BFS로 해결해야 할 경우 정점의 갯수 만큼 BFS를 돌려야 합니다. 하지만 위상 정렬을
-사용하면 단 한번으로 실행 순서를 정할 수 있습니다.
-
+DAG에서의 실행 순서는 단순히 BFS로 해결해야 할 경우 다이나믹 프로그래밍까지 동원하여 코드 길이가 상당히 길어지지만 위상정렬 하나로 간단하게 해결할 수 있습니다.
 ```python
 def __topological_sort(g, p) -> List[str]:
     """
