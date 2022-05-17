@@ -1,5 +1,5 @@
-# wanted-2nd-moadata-flask
-2차 원티드 프리온보딩 - 모아데이타 기업 과제 (개인 작업, Flask)
+# wanted-2nd-moadata
+2차 원티드 프리온보딩 - 모아데이타 기업 과제
 
 <center>
 <div style="display: flex">
